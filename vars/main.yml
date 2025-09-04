@@ -6,9 +6,19 @@ kubuntu_image_snap_deps:
 
 kubuntu_image_version: noble # other versions are not supported as of now
 
-kubuntu_image_definition_basename: "{{ kubuntu_image_name }}.yaml"
-kubuntu_image_definition_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_definition_basename }}"
+kubuntu_image_img_dir: "{{ kubuntu_image_dir }}/img"
+kubuntu_image_img_definition_basename: "{{ kubuntu_image_name }}.yaml"
+kubuntu_image_img_definition_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_definition_basename }}"
 kubuntu_image_img_basename: "{{ kubuntu_image_name }}.img"
-kubuntu_image_img_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_img_basename }}"
-kubuntu_image_manifest_basename: "{{ kubuntu_image_name }}.manifest"
-kubuntu_image_manifest_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_manifest_basename }}"
+kubuntu_image_img_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_basename }}"
+kubuntu_image_img_manifest_basename: "{{ kubuntu_image_name }}.manifest"
+kubuntu_image_img_manifest_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_manifest_basename }}"
+
+kubuntu_image_live_dir: "{{ kubuntu_image_dir }}/live"
+kubuntu_image_live_config_dir: "{{ kubuntu_image_live_dir }}/config"
+kubuntu_image_live_config_template_dir: "{{ role_path }}/templates/live/config"
+kubuntu_image_live_config_executable_dirs:
+  - hooks/normal
+  - includes.chroot/lib/live/config
+kubuntu_image_live_img_path: image.img
+kubuntu_image_live_img_build_path: "{{ kubuntu_image_live_dir }}/binary/{{ kubuntu_image_live_img_path }}"

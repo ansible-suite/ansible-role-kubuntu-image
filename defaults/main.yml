@@ -1,3 +1,6 @@
 kubuntu_image_dir: /var/local/ansible-kubuntu-image
 kubuntu_image_name: kubuntu-{{ kubuntu_image_version }}-preinstalled
 kubuntu_image_display_name: Kubuntu preinstalled
+kubuntu_image_clean: false
+kubuntu_image_img_clean: false
+kubuntu_image_live_clean: false

@@ -1,0 +1,62 @@
+- name: Create {{ kubuntu_image_live_dir }}
+  ansible.builtin.file:
+    name: "{{ kubuntu_image_live_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Generate config using lb config
+  ansible.builtin.command: >-
+    lb config
+    --distribution {{ kubuntu_image_version }}
+    --debian-installer none
+    --binary-images iso-hybrid
+  args:
+    creates: "{{ kubuntu_image_live_config_dir }}"
+    chdir: "{{ kubuntu_image_live_dir }}"
+
+- name: Create parent directories for custom config files
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ dest }}"
+    mode: '0644'
+  loop: "{{ lookup('ansible.builtin.filetree', kubuntu_image_live_config_template_dir) }}"
+  loop_control:
+    label: "{{ dest }}"
+  vars:
+    dest: "{{ kubuntu_image_live_config_dir }}/{{ item.path }}"
+  when: item.state == 'directory'
+  tags:
+    - directory
+
+- name: Create custom config files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ dest }}"
+    mode: '0644'
+  loop: "{{ lookup('community.general.filetree', kubuntu_image_live_config_template_dir) }}"
+  loop_control:
+    label: "{{ dest }}"
+  vars:
+    dest: "{{ kubuntu_image_live_config_dir }}/{{ item.path | regex_replace('.j2$', '') }}"
+  when: item.state == 'file'
+  tags:
+    - config
+
+- name: Make files in certain directories executable
+  ansible.builtin.file:
+    path: "{{ path }}"
+    mode: '0755'
+  loop: "{{
+      query('community.general.filetree', *([kubuntu_image_live_config_template_dir] | product(kubuntu_image_live_config_executable_dirs) | map('join', '/')))
+    }}"
+  loop_control:
+    label: "{{ path }}"
+  vars:
+    path:
+      "{{ item.root | regex_replace('^' + kubuntu_image_live_config_template_dir, kubuntu_image_live_config_dir) }}/{{ item.path | regex_replace('.j2$', '') }}"
+  when: item.state == 'file'
+
+- name: Build the ISO using lb build
+  ansible.builtin.command: lb build
+  args:
+    chdir: "{{ kubuntu_image_live_dir }}"

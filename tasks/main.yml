@@ -1,6 +1,8 @@
-- name: Install snapd using APT
+- name: Install packages using APT
   ansible.builtin.apt:
-    name: snapd
+    name:
+      - snapd
+      - live-build
     state: present
 
 - name: Install ubuntu-image using snap
@@ -8,24 +10,11 @@
     name: ubuntu-image
     classic: true
 
-- name: Create parent directories
-  ansible.builtin.file:
-    name: "{{ item | dirname }}"
-    state: directory
-    mode: '0755'
-  loop:
-    - "{{ kubuntu_image_definition_path }}"
-    - "{{ kubuntu_image_img_path }}"
-    - "{{ kubuntu_image_manifest_path }}"
+- name: Perform cleanup
+  ansible.builtin.import_tasks: clean.yml
 
-- name: Generate the image definition
-  ansible.builtin.template:
-    src: image.yaml.j2
-    dest: "{{ kubuntu_image_definition_path }}"
-    mode: '0644'
+- name: Generate the image using ubuntu-image
+  ansible.builtin.import_tasks: img.yml
 
-- name: Generate the image
-  ansible.builtin.command: ubuntu-image classic {{ kubuntu_image_definition_path | quote }}
-  args:
-    chdir: "{{ kubuntu_image_dir }}"
-  changed_when: true # TODO: logic for idempotency
+- name: Generate the live installer using live-build
+  ansible.builtin.import_tasks: live.yml
