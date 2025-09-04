@@ -1,0 +1,14 @@
+kubuntu_image_apt_deps:
+  - snapd
+
+kubuntu_image_snap_deps:
+  - ubuntu-image
+
+kubuntu_image_version: noble # other versions are not supported as of now
+
+kubuntu_image_definition_basename: "{{ kubuntu_image_name }}.yaml"
+kubuntu_image_definition_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_definition_basename }}"
+kubuntu_image_img_basename: "{{ kubuntu_image_name }}.img"
+kubuntu_image_img_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_img_basename }}"
+kubuntu_image_manifest_basename: "{{ kubuntu_image_name }}.manifest"
+kubuntu_image_manifest_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_manifest_basename }}"
