@@ -6,9 +6,19 @@ kubuntu_image_snap_deps:
 
 kubuntu_image_version: noble # other versions are not supported as of now
 
-kubuntu_image_definition_basename: "{{ kubuntu_image_name }}.yaml"
-kubuntu_image_definition_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_definition_basename }}"
+kubuntu_image_img_dir: "{{ kubuntu_image_dir }}/img"
+kubuntu_image_img_definition_basename: "{{ kubuntu_image_name }}.yaml"
+kubuntu_image_img_definition_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_definition_basename }}"
 kubuntu_image_img_basename: "{{ kubuntu_image_name }}.img"
-kubuntu_image_img_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_img_basename }}"
-kubuntu_image_manifest_basename: "{{ kubuntu_image_name }}.manifest"
-kubuntu_image_manifest_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_manifest_basename }}"
+kubuntu_image_img_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_basename }}"
+kubuntu_image_img_manifest_basename: "{{ kubuntu_image_name }}.manifest"
+kubuntu_image_img_manifest_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_manifest_basename }}"
+
+kubuntu_image_ocs_dir: "{{ kubuntu_image_dir }}/ocs"
+kubuntu_image_ocs_image: "{{ kubuntu_image_name }}"
+kubuntu_image_ocs_image_path: "{{ kubuntu_image_ocs_dir }}/{{ kubuntu_image_ocs_image }}"
+kubuntu_image_ocs_savedisk_opts: "-nogui -q2 -j2 -z1p -i 2000"
+kubuntu_image_ocs_iso_script_original: /usr/sbin/ocs-iso
+kubuntu_image_ocs_iso_script_custom: "{{ kubuntu_image_ocs_dir }}/ocs-iso"
+kubuntu_image_ocs_iso_opts: "-g en_US.UTF-8 -t -k NONE -r 5"
+kubuntu_image_ocs_iso_restoredisk_opts: "-b -p reboot"
