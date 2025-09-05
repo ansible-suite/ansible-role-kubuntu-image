@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 # from https://canonical-subiquity.readthedocs-hosted.com/en/latest/howto/ubuntu-image-classic-examples.html#building-a-basic-ubuntu-image-for-a-pc
 
 # Image metadata
@@ -51,4 +53,4 @@ artifacts:
   img:
     - name: {{ kubuntu_image_img_basename }}
   manifest:
-    name: {{ kubuntu_image_manifest_basename }}
+    name: {{ kubuntu_image_img_manifest_basename }}
