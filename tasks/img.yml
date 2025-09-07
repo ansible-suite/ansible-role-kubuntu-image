@@ -13,5 +13,5 @@
 - name: Generate the image
   ansible.builtin.command: ubuntu-image classic {{ kubuntu_image_img_definition_path | quote }}
   args:
-    chdir: "{{ kubuntu_image_dir }}"
+    chdir: "{{ kubuntu_image_img_dir }}"
     creates: "{{ kubuntu_image_img_path }}"
