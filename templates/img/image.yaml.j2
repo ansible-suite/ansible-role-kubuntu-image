@@ -28,7 +28,7 @@ rootfs:
     - multiverse
   archive: ubuntu
   flavor: kubuntu
-  mirror: http://archive.ubuntu.com/ubuntu/
+  mirror: "{{ kubuntu_image_img_mirror }}"
   pocket: updates
   seed:
     urls:
@@ -44,6 +44,7 @@ customization:
   extra-snaps:
     - name: snapd
     - name: bare
+    - name: core24
     - name: mesa-2404
     - name: gtk-common-themes
     - name: gnome-46-2404
