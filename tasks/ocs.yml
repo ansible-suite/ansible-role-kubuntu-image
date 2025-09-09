@@ -1,0 +1,106 @@
+- name: Create {{ kubuntu_image_ocs_dir }}
+  ansible.builtin.file:
+    name: "{{ kubuntu_image_ocs_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Convert the raw image to a clonezilla image
+  block:
+    - name: Set up loop device with the .img file to read from
+      become: true
+      ansible.builtin.command: losetup -fP --show {{ kubuntu_image_img_path }}
+      register: kubuntu_image_ocs_losetup_result
+      changed_when: true
+
+    - name: Create a clonezilla image from the loop device
+      become: true
+      ansible.builtin.command: >-
+        ocs-sr
+        {{ kubuntu_image_ocs_savedisk_opts }}
+        -or '{{ kubuntu_image_ocs_dir }}'
+        savedisk {{ kubuntu_image_ocs_image }} {{ kubuntu_image_ocs_losetup_result.stdout }}
+      args:
+        chdir: "{{ kubuntu_image_ocs_dir }}"
+        creates: "{{ kubuntu_image_ocs_image_path }}"
+
+  always:
+    - name: Remove the loop device
+      become: true
+      ansible.builtin.command: losetup -d {{ kubuntu_image_ocs_losetup_result.stdout }}
+      changed_when: true
+
+- name: Create parent directories for the include directory
+  ansible.builtin.file:
+    state: directory
+    dest: "{{ dest }}"
+    mode: '0755'
+  loop: "{{ lookup('ansible.builtin.filetree', kubuntu_image_ocs_include_files_dir, kubuntu_image_ocs_include_template_dir) }}"
+  loop_control:
+    label: "{{ dest }}"
+  vars:
+    dest: "{{ kubuntu_image_ocs_include_dir }}/{{ item.path }}"
+  when: item.state == 'directory'
+
+- name: Copy custom files to the include directory
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ dest }}"
+    mode: "{{ '0755' if item.path in kubuntu_image_ocs_include_executable_files else '0644' }}"
+  loop: "{{ lookup('community.general.filetree', kubuntu_image_ocs_include_files_dir) }}"
+  loop_control:
+    label: "{{ dest }}"
+  vars:
+    dest: "{{ kubuntu_image_ocs_include_dir }}/{{ item.path }}"
+  when: item.state == 'file'
+  tags:
+    - config
+
+- name: Create custom files from templates in the include directory
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ dest }}"
+    mode: "{{ '0755' if path in kubuntu_image_ocs_include_executable_files else '0644' }}"
+  loop: "{{ lookup('community.general.filetree', kubuntu_image_ocs_include_template_dir) }}"
+  loop_control:
+    label: "{{ dest }}"
+  vars:
+    path: "{{ item.path | regex_replace('.j2$', '') }}"
+    dest: "{{ kubuntu_image_ocs_include_dir }}/{{ path }}"
+  when: item.state == 'file'
+
+- name: Create the archive from ansible site
+  ansible.builtin.archive:
+    path: "{{ kubuntu_image_ansible_tmp_site }}"
+    dest: "{{ kubuntu_image_ocs_ansible_archive }}"
+    mode: '600'
+
+- name: Copy ocs-iso for modification
+  ansible.builtin.copy:
+    src: "{{ kubuntu_image_ocs_iso_script_original }}"
+    dest: "{{ kubuntu_image_ocs_iso_script_custom }}"
+    remote_src: true
+    mode: '0755'
+
+- name: Edit certain lines in the custom ocs-iso
+  ansible.builtin.lineinfile:
+    path: "{{ kubuntu_image_ocs_iso_script_custom }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: "{{ item.backrefs | default(false) }}"
+  loop: "{{ kubuntu_image_ocs_iso_script_lines }}"
+
+- name: Create clonezilla ISO
+  become: true
+  ansible.builtin.shell: >-
+    yes |
+    {{ kubuntu_image_ocs_iso_script_custom | quote }}
+    {{ kubuntu_image_ocs_iso_opts }}
+    -p {{ kubuntu_image_ocs_dir | quote }}
+    -e "{{ kubuntu_image_ocs_iso_restoredisk_opts }} restoredisk {{ kubuntu_image_ocs_image }} {{ kubuntu_image_ocs_install_device }}"
+    -u {{ kubuntu_image_ocs_include_dir | quote }}
+    -x "{{ kubuntu_image_ocs_iso_kernel_opts }} ocs_restoredisk_postrun=\"{{ kubuntu_image_ocs_iso_restoredisk_postrun }}\""
+    -a "{{ kubuntu_image_ocs_iso_path | regex_replace('.iso$', '') }}"
+    {{ kubuntu_image_ocs_image }}
+  args:
+    chdir: "{{ kubuntu_image_ocs_dir }}"
+    creates: "{{ kubuntu_image_ocs_iso_path }}"

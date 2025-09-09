@@ -1,0 +1,18 @@
+kubuntu_image_dir: "{{ ansible_env.HOME }}/ansible-kubuntu-image"
+kubuntu_image_name: kubuntu-{{ kubuntu_image_version }}-preinstalled
+kubuntu_image_display_name: Kubuntu preinstalled
+kubuntu_image_minimal: true
+kubuntu_image_clean: false
+kubuntu_image_img_clean: false
+kubuntu_image_ocs_clean: false
+kubuntu_image_ocs_iso_clean: false
+kubuntu_image_language_packs: ['en']
+
+kubuntu_image_img_mirror: "http://archive.ubuntu.com/ubuntu/"
+
+kubuntu_image_ansible_branch: HEAD
+kubuntu_image_ansible_playbook: early.yml
+
+kubuntu_image_ocs_iso_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_name }}.iso"
+kubuntu_image_ocs_hostname: ""
+kubuntu_image_ocs_network_iface: eth0

@@ -1,0 +1,43 @@
+kubuntu_image_apt_deps:
+  - snapd
+
+kubuntu_image_snap_deps:
+  - ubuntu-image
+
+kubuntu_image_version: noble # other versions are not supported as of now
+
+kubuntu_image_img_dir: "{{ kubuntu_image_dir }}/img"
+kubuntu_image_img_customize_script_basename: "customize.sh"
+kubuntu_image_img_customize_script_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_customize_script_basename }}"
+kubuntu_image_img_definition_basename: "{{ kubuntu_image_name }}.yaml"
+kubuntu_image_img_definition_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_definition_basename }}"
+kubuntu_image_img_basename: "{{ kubuntu_image_name }}.img"
+kubuntu_image_img_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_basename }}"
+kubuntu_image_img_manifest_basename: "{{ kubuntu_image_name }}.manifest"
+kubuntu_image_img_manifest_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_manifest_basename }}"
+
+kubuntu_image_ansible_tmp_site: "{{ kubuntu_image_ansible_tempfile_result.path }}/site"
+kubuntu_image_ansible_tmp_ssh_key_file: "{{ kubuntu_image_ansible_tempfile_result.path }}/key"
+kubuntu_image_ansible_tmp_vault_password_file: "{{ kubuntu_image_ansible_tmp_site }}/.vault_pass"
+
+kubuntu_image_ocs_dir: "{{ kubuntu_image_dir }}/ocs"
+kubuntu_image_ocs_image: "{{ kubuntu_image_name }}"
+kubuntu_image_ocs_image_path: "{{ kubuntu_image_ocs_dir }}/{{ kubuntu_image_ocs_image }}"
+kubuntu_image_ocs_savedisk_opts: "-nogui -q2 -j2 -z1p -i 2000"
+kubuntu_image_ocs_include_dir: "{{ kubuntu_image_ocs_dir }}/include"
+kubuntu_image_ocs_include_files_dir: "{{ role_path }}/files/ocs/include"
+kubuntu_image_ocs_include_template_dir: "{{ role_path }}/templates/ocs/include"
+kubuntu_image_ocs_include_executable_files: []
+kubuntu_image_ocs_ansible_archive: "{{ kubuntu_image_ocs_include_dir }}/custom-setup/ansible-site.tar.gz"
+kubuntu_image_ocs_iso_script_original: /usr/sbin/ocs-iso
+kubuntu_image_ocs_iso_script_custom: "{{ kubuntu_image_ocs_dir }}/ocs-iso"
+kubuntu_image_ocs_iso_script_lines:
+  - regexp: '^clonezilla_iso_arch_tag='
+    line: 'clonezilla_iso_arch_tag="-amd64"'
+  - regexp: '^(\s+)include_dir_graft_point='
+    line: '\1include_dir_graft_point="/=$include_dir/"'
+    backrefs: true
+kubuntu_image_ocs_iso_opts: "-g en_US.UTF-8 -t -k NONE -r 5"
+kubuntu_image_ocs_iso_restoredisk_opts: "-b -o1 -p reboot"
+kubuntu_image_ocs_iso_kernel_opts: "noeject"
+kubuntu_image_ocs_iso_restoredisk_postrun: "bash /run/live/medium/custom-setup/setup.sh"

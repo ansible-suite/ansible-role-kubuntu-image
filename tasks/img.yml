@@ -1,0 +1,24 @@
+- name: Create {{ kubuntu_image_img_dir }}
+  ansible.builtin.file:
+    name: "{{ kubuntu_image_img_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Copy the image customization script
+  ansible.builtin.template:
+    src: img/customize.sh.j2
+    dest: "{{ kubuntu_image_img_customize_script_path }}"
+    mode: '0744'
+
+- name: Generate the image definition
+  ansible.builtin.template:
+    src: img/image.yaml.j2
+    dest: "{{ kubuntu_image_img_definition_path }}"
+    mode: '0644'
+
+- name: Generate the image
+  become: true
+  ansible.builtin.command: ubuntu-image classic {{ kubuntu_image_img_definition_path | quote }}
+  args:
+    chdir: "{{ kubuntu_image_img_dir }}"
+    creates: "{{ kubuntu_image_img_path }}"

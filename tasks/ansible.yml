@@ -1,0 +1,26 @@
+- name: Get a temporary directory to download the ansible site into
+  ansible.builtin.tempfile:
+    state: directory
+  register: kubuntu_image_ansible_tempfile_result
+
+- name: Extract the SSH private key used for cloning the ansible site
+  ansible.builtin.copy:
+    content: "{{ kubuntu_image_ansible_ssh_key }}"
+    dest: "{{ kubuntu_image_ansible_tmp_ssh_key_file }}"
+    mode: '0600'
+  no_log: true
+  when: kubuntu_image_ansible_ssh_key is defined
+
+- name: Clone the ansible site from {{ kubuntu_image_ansible_repo }}
+  ansible.builtin.git:
+    repo: "{{ kubuntu_image_ansible_repo }}"
+    version: "{{ kubuntu_image_ansible_branch }}"
+    dest: "{{ kubuntu_image_ansible_tmp_site }}"
+    key_file: "{{ kubuntu_image_ansible_tmp_ssh_key_file }}"
+    accept_newhostkey: true
+
+- name: Copy the vault password file into the ansible site
+  ansible.builtin.copy:
+    src: "{{ kubuntu_image_ansible_vault_password_file }}"
+    dest: "{{ kubuntu_image_ansible_tmp_vault_password_file }}"
+    mode: '0600'

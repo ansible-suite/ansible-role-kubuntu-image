@@ -1,0 +1,26 @@
+- name: Install packages using APT
+  ansible.builtin.apt:
+    name:
+      - snapd
+      - clonezilla
+      - isolinux
+    state: present
+  become: true
+
+- name: Install ubuntu-image using snap
+  community.general.snap:
+    name: ubuntu-image
+    classic: true
+  become: true
+
+- name: Perform cleanup
+  ansible.builtin.import_tasks: clean.yml
+
+- name: Generate the image using ubuntu-image
+  ansible.builtin.import_tasks: img.yml
+
+- name: Prepare ansible site for custom setup
+  ansible.builtin.import_tasks: ansible.yml
+
+- name: Generate the clone ISO using clonezilla
+  ansible.builtin.import_tasks: ocs.yml

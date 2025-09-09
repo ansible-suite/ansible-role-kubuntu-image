@@ -1,0 +1,75 @@
+# {{ ansible_managed }}
+
+# from https://canonical-subiquity.readthedocs-hosted.com/en/latest/howto/ubuntu-image-classic-examples.html#building-a-basic-ubuntu-image-for-a-pc
+
+# Image metadata
+name: {{ kubuntu_image_name }}
+display-name: {{ kubuntu_image_display_name }}
+revision: 1
+architecture: amd64
+series: noble
+class: preinstalled
+
+# Optional kernel (defaults to 'linux' if omitted)
+kernel: linux-image-generic
+
+# Gadget snap
+gadget:
+  url: https://github.com/canonical/pc-gadget
+  branch: classic
+  type: git
+
+# Root filesystem definition
+rootfs:
+  components:
+    - main
+    - restricted
+    - universe
+    - multiverse
+  archive: ubuntu
+  flavor: kubuntu
+  mirror: "{{ kubuntu_image_img_mirror }}"
+  pocket: updates
+  seed:
+    urls:
+      - https://ubuntu-archive-team.ubuntu.com/seeds/
+    names:
+      - desktop
+      - minimal
+      - standard
+    branch: '{{ kubuntu_image_version }}'
+    vcs: false
+  sources-list-deb822: true
+
+customization:
+  pocket: updates
+
+  extra-packages:
+    - name: ubuntu-standard
+{% for lang in kubuntu_image_language_packs %}
+    - name: language-pack-{{ lang }}
+{% endfor %}
+
+  # Required dependencies
+  extra-snaps:
+    - name: snapd
+    - name: bare
+    - name: core24
+    - name: mesa-2404
+    - name: gtk-common-themes
+    - name: gnome-46-2404
+
+  manual:
+    copy-file:
+      - source: "{{ kubuntu_image_img_customize_script_basename }}"
+        destination: /usr/local/sbin/customize.sh
+
+    execute:
+      - path: /usr/local/sbin/customize.sh
+
+# Artifacts to generate
+artifacts:
+  img:
+    - name: {{ kubuntu_image_img_basename }}
+  manifest:
+    name: {{ kubuntu_image_img_manifest_basename }}
