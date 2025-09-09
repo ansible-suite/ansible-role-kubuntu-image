@@ -8,3 +8,4 @@ kubuntu_image_ocs_clean: false
 kubuntu_image_img_mirror: "http://archive.ubuntu.com/ubuntu/"
 kubuntu_image_ocs_iso_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_name }}.iso"
 kubuntu_image_ocs_iso_clean: false
+kubuntu_image_language_packs: ['en']
