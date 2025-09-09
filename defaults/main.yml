@@ -1,4 +1,4 @@
-kubuntu_image_dir: /var/local/ansible-kubuntu-image
+kubuntu_image_dir: "{{ ansible_env.HOME }}/ansible-kubuntu-image"
 kubuntu_image_name: kubuntu-{{ kubuntu_image_version }}-preinstalled
 kubuntu_image_display_name: Kubuntu preinstalled
 kubuntu_image_minimal: true
