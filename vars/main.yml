@@ -7,6 +7,8 @@ kubuntu_image_snap_deps:
 kubuntu_image_version: noble # other versions are not supported as of now
 
 kubuntu_image_img_dir: "{{ kubuntu_image_dir }}/img"
+kubuntu_image_img_customize_script_basename: "customize.sh"
+kubuntu_image_img_customize_script_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_customize_script_basename }}"
 kubuntu_image_img_definition_basename: "{{ kubuntu_image_name }}.yaml"
 kubuntu_image_img_definition_path: "{{ kubuntu_image_img_dir }}/{{ kubuntu_image_img_definition_basename }}"
 kubuntu_image_img_basename: "{{ kubuntu_image_name }}.img"

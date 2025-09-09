@@ -35,12 +35,17 @@ rootfs:
       - https://ubuntu-archive-team.ubuntu.com/seeds/
     names:
       - desktop
+      - minimal
+      - standard
     branch: '{{ kubuntu_image_version }}'
     vcs: false
   sources-list-deb822: true
 
 customization:
   pocket: updates
+
+  extra-packages:
+    - name: ubuntu-standard
 
   # Required dependencies
   extra-snaps:
@@ -50,6 +55,14 @@ customization:
     - name: mesa-2404
     - name: gtk-common-themes
     - name: gnome-46-2404
+
+  manual:
+    copy-file:
+      - source: "{{ kubuntu_image_img_customize_script_basename }}"
+        destination: /usr/local/sbin/customize.sh
+
+    execute:
+      - path: /usr/local/sbin/customize.sh
 
 # Artifacts to generate
 artifacts:

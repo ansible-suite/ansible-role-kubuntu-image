@@ -4,6 +4,13 @@
     state: directory
     mode: '0700'
 
+- name: Copy the image customization script
+  ansible.builtin.template:
+    src: img/customize.sh.j2
+    dest: "{{ kubuntu_image_img_customize_script_path }}"
+    mode: '0700'
+
+
 - name: Generate the image definition
   ansible.builtin.template:
     src: img/image.yaml.j2
