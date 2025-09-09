@@ -10,6 +10,12 @@
     state: absent
   when: kubuntu_image_img_clean | bool
 
+- name: Remove the "{{ kubuntu_image_ocs_image_path }}"
+  ansible.builtin.file:
+    path: "{{ kubuntu_image_ocs_image_path }}"
+    state: absent
+  when: kubuntu_image_img_clean | bool
+
 - name: Remove "{{ kubuntu_image_ocs_dir }}"
   ansible.builtin.file:
     path: "{{ kubuntu_image_ocs_dir }}"
