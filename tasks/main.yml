@@ -5,11 +5,13 @@
       - clonezilla
       - isolinux
     state: present
+  become: true
 
 - name: Install ubuntu-image using snap
   community.general.snap:
     name: ubuntu-image
     classic: true
+  become: true
 
 - name: Perform cleanup
   ansible.builtin.import_tasks: clean.yml
