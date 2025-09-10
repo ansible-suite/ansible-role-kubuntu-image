@@ -16,7 +16,7 @@
     repo: "{{ kubuntu_image_ansible_repo }}"
     version: "{{ kubuntu_image_ansible_branch }}"
     dest: "{{ kubuntu_image_ansible_tmp_site }}"
-    key_file: "{{ kubuntu_image_ansible_tmp_ssh_key_file }}"
+    key_file: "{{ kubuntu_image_ansible_ssh_key_file | default(omit, True) }}"
     accept_newhostkey: true
 
 - name: Copy the vault password file into the ansible site
