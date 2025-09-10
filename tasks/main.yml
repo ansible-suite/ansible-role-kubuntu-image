@@ -3,6 +3,7 @@
     name:
       - snapd
       - clonezilla
+      - xorriso
       - isolinux
     state: present
   become: true
