@@ -14,6 +14,7 @@ kubuntu_image_ansible_branch: HEAD
 kubuntu_image_ansible_inventory_file:
   "{% if kubuntu_image_ansible_inventory_name is defined %}inventory/{{ kubuntu_image_ansible_inventory_name }}{% endif %}"
 kubuntu_image_ansible_playbook: early.yml
+kubuntu_image_ansible_ssh_key_file: "{{ kubuntu_image_ansible_tmp_ssh_key_file if kubuntu_image_ansible_ssh_key is defined }}"
 
 kubuntu_image_ocs_iso_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_name }}.iso"
 kubuntu_image_ocs_hostname: ""
