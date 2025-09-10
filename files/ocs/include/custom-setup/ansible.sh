@@ -22,6 +22,11 @@ DEBIAN_FRONTEND=noninteractive apt -y install python3-venv
 # activate the environment
 source "$ansible_site/bin/activate"
 
+# configure the ansible inventory override, if any
+if [[ -n "$SETUP_ANSIBLE_INVENTORY" ]]; then
+    export ANSIBLE_INVENTORY="$ansible_site/$SETUP_ANSIBLE_INVENTORY"
+fi
+
 
 ## Run the playbook locally
 ansible-playbook-local "$ansible_site/$SETUP_ANSIBLE_PLAYBOOK"
