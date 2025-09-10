@@ -16,9 +16,9 @@ if [[ -n "$SETUP_HOSTNAME" ]]; then
 elif [[ -n "$SETUP_NETWORK_IFACE" ]]; then
 
     # get the IP of the network interface
-    ipv4_address="$(ip -4 addr show $main_adapter_name | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+')"
+    ipv4_address="$(ip -4 addr show "$SETUP_NETWORK_IFACE" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+')"
 
-    # get the hostname by reverse lookup
+    # get the hostname by reverse DNS lookup
     hostname="$(dig -x "$ipv4_address" +short | sed 's/\.$//')"
 
 fi
