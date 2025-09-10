@@ -11,6 +11,8 @@ kubuntu_image_language_packs: ['en']
 kubuntu_image_img_mirror: "http://archive.ubuntu.com/ubuntu/"
 
 kubuntu_image_ansible_branch: HEAD
+kubuntu_image_ansible_inventory_file:
+  "{% if kubuntu_image_ansible_inventory_name is defined %}inventory/{{ kubuntu_image_ansible_inventory_name }}{% endif %}"
 kubuntu_image_ansible_playbook: early.yml
 
 kubuntu_image_ocs_iso_path: "{{ kubuntu_image_dir }}/{{ kubuntu_image_name }}.iso"
