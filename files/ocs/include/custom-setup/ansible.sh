@@ -14,6 +14,7 @@ tar -xzf "$SETUP_ANSIBLE_SITE" -C "$ansible_site" --strip-components=1
 ## Initialize the environment
 
 # install python3-venv
+apt update
 DEBIAN_FRONTEND=noninteractive apt -y install python3-venv
 
 # run setup script
